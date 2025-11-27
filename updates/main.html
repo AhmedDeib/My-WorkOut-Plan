@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workout App - Main</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f5f7;
+      height: 100vh;
+    }
+
+    .app {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 230px;
+      background: #111827;
+      color: #e5e7eb;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .menu-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .nav-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-item:hover {
+      background: #1f2937;
+    }
+
+    .nav-item.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 12px;
+      color: #9ca3af;
+      text-align: center;
+      padding-top: 15px;
+      border-top: 1px solid #1f2937;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 20px 25px;
+      overflow-y: auto;
+    }
+
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .main-header h1 {
+      font-size: 22px;
+    }
+
+    .user-badge {
+      font-size: 14px;
+      background: white;
+      padding: 8px 12px;
+      border-radius: 999px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.06);
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    /* Sections */
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* Designer form */
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+    }
+
+    .exercise-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .exercise-row input {
+      width: 100%;
+      padding: 6px;
+      font-size: 13px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .btn + .btn {
+      margin-left: 6px;
+    }
+
+    #saveMessage,
+    #sessionMessage {
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .success {
+      color: #16a34a;
+    }
+
+    .error {
+      color: #dc2626;
+    }
+
+    #savedWorkoutsList,
+    #sessionList {
+      margin-top: 8px;
+      padding-left: 18px;
+    }
+
+    #savedWorkoutsList li,
+    #sessionList li {
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    /* Do workout layout */
+    .do-exercise-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .do-exercise-row span {
+      font-size: 14px;
+    }
+
+    .do-exercise-row input {
+      padding: 6px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo">Workout App</div>
+
+      <div class="menu-title">Menu</div>
+
+      <div class="nav-item active" data-target="section-design">
+        🛠️ Design Workout
+      </div>
+
+      <div class="nav-item" data-target="section-do">
+        💪 Do Workout
+      </div>
+
+      <div class="nav-item" data-target="section-previous">
+        📊 Previous Workouts
+      </div>
+
+      <div class="nav-item" data-target="section-more">
+        ⚙️ More (coming soon)
+      </div>
+
+      <div class="sidebar-footer">
+        v0.2 • MVP layout
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main">
+      <div class="main-header">
+        <h1 id="sectionTitle">Design Workout</h1>
+        <div class="user-badge">
+          Logged in as: <strong>test@example.com</strong>
+        </div>
+      </div>
+
+      <!-- DESIGN WORKOUT SECTION -->
+      <section id="section-design" class="section active">
+        <div class="card">
+          <h2>Create a new workout</h2>
+          <p class="muted" style="margin-bottom: 12px;">
+            Give your workout a name and add exercises with sets and reps.
+          </p>
+
+          <div class="form-group">
+            <label for="workoutName">Workout name</label>
+            <input type="text" id="workoutName" placeholder="e.g. Chest & Shoulders">
+          </div>
+
+          <div class="form-group">
+            <label>Exercises</label>
+            <div id="exerciseList"></div>
+            <button type="button" class="btn btn-secondary" id="addExerciseBtn">+ Add exercise</button>
+          </div>
+
+          <button type="button" class="btn btn-primary" id="saveWorkoutBtn">Save workout</button>
+          <div id="saveMessage"></div>
+        </div>
+
+        <div class="card">
+          <h2>Saved workouts</h2>
+          <p class="muted">
+            These are the workouts you've designed. The "Do Workout" page uses these.
+          </p>
+          <ul id="savedWorkoutsList"></ul>
+        </div>
+      </section>
+
+      <!-- DO WORKOUT SECTION -->
+      <section id="section-do" class="section">
+        <div class="card">
+          <h2>Start a workout</h2>
+          <p class="muted" style="margin-bottom: 12px;">
+            Select one of your saved workouts, choose a date, then log the weights you used.
+          </p>
+
+          <div class="form-group">
+            <label for="doWorkoutSelect">Choose workout</label>
+            <select id="doWorkoutSelect">
+              <option value="">No workouts found</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="doWorkoutDate">Date</label>
+            <input type="date" id="doWorkoutDate">
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Exercises for this workout</h2>
+          <p class="muted">
+            For each exercise, enter the weight you used. Sets × reps are taken from the workout design.
+          </p>
+          <div id="doExercisesContainer"></div>
+        </div>
+
+        <div class="card">
+          <h2>Notes & save</h2>
+          <div class="form-group">
+            <label for="doNotes">Notes (optional)</label>
+            <textarea id="doNotes" rows="3" placeholder="e.g. Felt strong today, increase bench next week."></textarea>
+          </div>
+          <button type="button" class="btn btn-primary" id="saveSessionBtn">Save workout session</button>
+          <div id="sessionMessage"></div>
+        </div>
+      </section>
+
+      <!-- PREVIOUS WORKOUTS SECTION -->
+      <section id="section-previous" class="section">
+        <div class="card">
+          <h2>Previous workouts</h2>
+          <p class="muted">
+            These are the sessions you logged from the "Do Workout" page.
+          </p>
+          <ul id="sessionList"></ul>
+        </div>
+      </section>
+
+      <!-- MORE SECTION (placeholder) -->
+      <section id="section-more" class="section">
+        <div class="card">
+          <h2>More (coming soon)</h2>
+          <p class="muted">
+            Future features could include user profile, app settings, dark mode, and detailed statistics.
+          </p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // --- Global data ---
+    let workouts = [];
+    let sessions = [];
+
+    // --- Load from localStorage on start ---
+    function loadWorkouts() {
+      const saved = localStorage.getItem('workouts');
+      if (saved) {
+        try {
+          workouts = JSON.parse(saved);
+        } catch {
+          workouts = [];
+        }
+      } else {
+        workouts = [];
+      }
+    }
+
+    function loadSessions() {
+      const saved = localStorage.getItem('sessions');
+      if (saved) {
+        try {
+          sessions = JSON.parse(saved);
+        } catch {
+          sessions = [];
+        }
+      } else {
+        sessions = [];
+      }
+    }
+
+    // --- Sidebar navigation ---
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('.section');
+    const sectionTitle = document.getElementById('sectionTitle');
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        navItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        const targetId = item.getAttribute('data-target');
+        sections.forEach(sec => {
+          sec.classList.toggle('active', sec.id === targetId);
+        });
+
+        if (targetId === 'section-design') sectionTitle.textContent = 'Design Workout';
+        if (targetId === 'section-do') sectionTitle.textContent = 'Do Workout';
+        if (targetId === 'section-previous') sectionTitle.textContent = 'Previous Workouts';
+        if (targetId === 'section-more') sectionTitle.textContent = 'More (coming soon)';
+      });
+    });
+
+    // --- Designer elements ---
+    const exerciseListEl = document.getElementById('exerciseList');
+    const addExerciseBtn = document.getElementById('addExerciseBtn');
+    const saveWorkoutBtn = document.getElementById('saveWorkoutBtn');
+    const workoutNameInput = document.getElementById('workoutName');
+    const saveMessageEl = document.getElementById('saveMessage');
+    const savedWorkoutsListEl = document.getElementById('savedWorkoutsList');
+
+    function renderSavedWorkouts() {
+      savedWorkoutsListEl.innerHTML = '';
+      if (workouts.length === 0) {
+        savedWorkoutsListEl.innerHTML = '<li class="muted">No workouts saved yet.</li>';
+        return;
+      }
+      workouts.forEach((w, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. ${w.name} (${w.exercises.length} exercises)`;
+        savedWorkoutsListEl.appendChild(li);
+      });
+    }
+
+    function addExerciseRow(defaults = {}) {
+      const row = document.createElement('div');
+      row.className = 'exercise-row';
+
+      row.innerHTML = `
+        <input type="text" class="exercise-name" placeholder="Exercise name" value="${defaults.name || ''}">
+        <input type="number" class="exercise-sets" placeholder="Sets" min="1" value="${defaults.sets || ''}">
+        <input type="number" class="exercise-reps" placeholder="Reps" min="1" value="${defaults.reps || ''}">
+        <button type="button" class="btn btn-danger remove-exercise">X</button>
+      `;
+
+      row.querySelector('.remove-exercise').addEventListener('click', () => {
+        row.remove();
+      });
+
+      exerciseListEl.appendChild(row);
+    }
+
+    function showMessage(el, text, type) {
+      el.textContent = text;
+      el.className = ''; // reset
+      el.classList.add(type);
+    }
+
+    function saveWorkout() {
+      const name = workoutNameInput.value.trim();
+      if (!name) {
+        showMessage(saveMessageEl, 'Please enter a workout name.', 'error');
+        return;
+      }
+
+      const rows = exerciseListEl.querySelectorAll('.exercise-row');
+      if (rows.length === 0) {
+        showMessage(saveMessageEl, 'Please add at least one exercise.', 'error');
+        return;
+      }
+
+      const exercises = [];
+      for (const row of rows) {
+        const exName = row.querySelector('.exercise-name').value.trim();
+        const sets = row.querySelector('.exercise-sets').value;
+        const reps = row.querySelector('.exercise-reps').value;
+
+        if (!exName || !sets || !reps) {
+          showMessage(saveMessageEl, 'Please fill in all exercise fields.', 'error');
+          return;
+        }
+
+        exercises.push({
+          name: exName,
+          sets: Number(sets),
+          reps: Number(reps)
+        });
+      }
+
+      const workout = { name, exercises };
+      workouts.push(workout);
+      localStorage.setItem('workouts', JSON.stringify(workouts));
+
+      showMessage(saveMessageEl, 'Workout saved successfully!', 'success');
+
+      // Reset form
+      workoutNameInput.value = '';
+      exerciseListEl.innerHTML = '';
+      addExerciseRow();
+
+      renderSavedWorkouts();
+      populateWorkoutSelect(); // update Do Workout dropdown
+    }
+
+    // --- Do Workout elements ---
+    const doWorkoutSelect = document.getElementById('doWorkoutSelect');
+    const doWorkoutDate = document.getElementById('doWorkoutDate');
+    const doExercisesContainer = document.getElementById('doExercisesContainer');
+    const doNotes = document.getElementById('doNotes');
+    const saveSessionBtn = document.getElementById('saveSessionBtn');
+    const sessionMessageEl = document.getElementById('sessionMessage');
+    const sessionListEl = document.getElementById('sessionList');
+
+    function setTodayDate() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      doWorkoutDate.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    function populateWorkoutSelect() {
+      doWorkoutSelect.innerHTML = '';
+
+      if (workouts.length === 0) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'No workouts available';
+        doWorkoutSelect.appendChild(opt);
+        doWorkoutSelect.disabled = true;
+        return;
+      }
+
+      doWorkoutSelect.disabled = false;
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = 'Select a workout';
+      doWorkoutSelect.appendChild(placeholder);
+
+      workouts.forEach((w, index) => {
+        const opt = document.createElement('option');
+        opt.value = index;
+        opt.textContent = w.name;
+        doWorkoutSelect.appendChild(opt);
+      });
+    }
+
+    function renderDoExercises(workoutIndex) {
+      doExercisesContainer.innerHTML = '';
+      if (workoutIndex === '' || workoutIndex == null) return;
+
+      const workout = workouts[workoutIndex];
+      workout.exercises.forEach((ex, i) => {
+        const row = document.createElement('div');
+        row.className = 'do-exercise-row';
+        row.dataset.exerciseIndex = i;
+
+        row.innerHTML = `
+          <span><strong>${ex.name}</strong> — ${ex.sets} sets × ${ex.reps} reps</span>
+          <input type="number" class="do-weight" placeholder="Weight (e.g. 40)" min="0">
+          <span class="muted">kg</span>
+        `;
+
+        doExercisesContainer.appendChild(row);
+      });
+    }
+
+    function renderSessions() {
+      sessionListEl.innerHTML = '';
+      if (sessions.length === 0) {
+        sessionListEl.innerHTML = '<li class="muted">No sessions saved yet.</li>';
+        return;
+      }
+
+      sessions
+        .slice()
+        .reverse() // show latest first
+        .forEach((s) => {
+          const li = document.createElement('li');
+          const date = s.date;
+          const workoutName = s.workoutName;
+          const exSummary = s.exercises
+            .map(e => `${e.name}: ${e.weight} kg`)
+            .join(' | ');
+
+          li.textContent = `${date} — ${workoutName} — ${exSummary}`;
+          sessionListEl.appendChild(li);
+        });
+    }
+
+    function saveSession() {
+      const workoutIndex = doWorkoutSelect.value;
+      if (workoutIndex === '') {
+        showMessage(sessionMessageEl, 'Please select a workout.', 'error');
+        return;
+      }
+
+      const date = doWorkoutDate.value;
+      if (!date) {
+        showMessage(sessionMessageEl, 'Please choose a date.', 'error');
+        return;
+      }
+
+      const workout = workouts[workoutIndex];
+      const rows = doExercisesContainer.querySelectorAll('.do-exercise-row');
+      if (rows.length === 0) {
+        showMessage(sessionMessageEl, 'No exercises to log. Check your workout.', 'error');
+        return;
+      }
+
+      const exercisesLogged = [];
+      for (const row of rows) {
+        const weightInput = row.querySelector('.do-weight');
+        const weightVal = weightInput.value;
+        const exerciseIndex = row.dataset.exerciseIndex;
+        const baseExercise = workout.exercises[exerciseIndex];
+
+        if (!weightVal) {
+          showMessage(sessionMessageEl, 'Please enter weight for all exercises.', 'error');
+          return;
+        }
+
+        exercisesLogged.push({
+          name: baseExercise.name,
+          sets: baseExercise.sets,
+          reps: baseExercise.reps,
+          weight: Number(weightVal)
+        });
+      }
+
+      const notes = doNotes.value.trim();
+
+      const session = {
+        date,
+        workoutName: workout.name,
+        exercises: exercisesLogged,
+        notes
+      };
+
+      sessions.push(session);
+      localStorage.setItem('sessions', JSON.stringify(sessions));
+
+      showMessage(sessionMessageEl, 'Workout session saved!', 'success');
+
+      // Reset weights and notes
+      doNotes.value = '';
+      doExercisesContainer.querySelectorAll('.do-weight').forEach(input => input.value = '');
+
+      renderSessions();
+    }
+
+    // --- Event wiring and init ---
+    addExerciseBtn.addEventListener('click', () => addExerciseRow());
+    saveWorkoutBtn.addEventListener('click', saveWorkout);
+    saveSessionBtn.addEventListener('click', saveSession);
+
+    doWorkoutSelect.addEventListener('change', (e) => {
+      const index = e.target.value;
+      renderDoExercises(index);
+    });
+
+    // Initial setup on page load
+    loadWorkouts();
+    loadSessions();
+    renderSavedWorkouts();
+    populateWorkoutSelect();
+    renderSessions();
+    addExerciseRow(); // start designer with one row
+    setTodayDate();
+  </script>
+
+</body>
+</html>
