@@ -15,6 +15,7 @@
     body {
       font-family: Arial, sans-serif;
       background: #f4f5f7;
+      color: #111827;
       height: 100vh;
     }
 
@@ -91,6 +92,12 @@
       margin-bottom: 20px;
     }
 
+    .header-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
     .main-header h1 {
       font-size: 22px;
     }
@@ -130,7 +137,7 @@
       display: block;
     }
 
-    /* Designer form */
+    /* Forms */
     .form-group {
       margin-bottom: 12px;
     }
@@ -151,6 +158,11 @@
       font-size: 14px;
     }
 
+    textarea {
+      resize: vertical;
+    }
+
+    /* Designer exercise rows */
     .exercise-row {
       display: grid;
       grid-template-columns: 2fr 1fr 1fr auto;
@@ -160,11 +172,11 @@
     }
 
     .exercise-row input {
-      width: 100%;
       padding: 6px;
       font-size: 13px;
     }
 
+    /* Buttons */
     .btn {
       display: inline-block;
       padding: 8px 12px;
@@ -187,6 +199,12 @@
     .btn-danger {
       background: #ef4444;
       color: #fff;
+    }
+
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 6px;
     }
 
     .btn + .btn {
@@ -219,68 +237,139 @@
       font-size: 14px;
     }
 
-    /* Do workout layout */
-    .do-exercise-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 8px;
-      align-items: center;
+    /* Do Workout exercise cards with tables */
+    .exercise-card {
+      margin-bottom: 16px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
     }
 
-    .do-exercise-row span {
+    .exercise-header {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .sets-table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 14px;
     }
 
-    .do-exercise-row input {
+    .sets-table th,
+    .sets-table td {
       padding: 6px;
+      text-align: left;
+    }
+
+    .sets-table th {
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .sets-table input {
+      width: 100%;
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
       font-size: 13px;
+      box-sizing: border-box;
+    }
+
+    /* Progress chart */
+    #progressChart {
+      width: 100%;
+      max-width: 100%;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: #ffffff;
+      display: block;
+      margin-top: 10px;
+    }
+
+    /* Dark mode */
+    body.dark {
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    body.dark .sidebar {
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    body.dark .main {
+      background: #020617;
+    }
+
+    body.dark .card {
+      background: #020617;
+      border: 1px solid #1f2937;
+      box-shadow: none;
+    }
+
+    body.dark .user-badge {
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    body.dark .exercise-card {
+      background: #020617;
+      border-color: #1f2937;
+    }
+
+    body.dark input,
+    body.dark select,
+    body.dark textarea {
+      background: #020617;
+      color: #e5e7eb;
+      border-color: #4b5563;
+    }
+
+    body.dark .nav-item:hover {
+      background: #1f2937;
+    }
+
+    body.dark #progressChart {
+      background: #020617;
+      border-color: #1f2937;
     }
   </style>
 </head>
 <body>
-
   <div class="app">
-    <!-- LEFT SIDEBAR -->
+    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="logo">Workout App</div>
 
       <div class="menu-title">Menu</div>
 
-      <div class="nav-item active" data-target="section-design">
-        🛠️ Design Workout
-      </div>
-
-      <div class="nav-item" data-target="section-do">
-        💪 Do Workout
-      </div>
-
-      <div class="nav-item" data-target="section-previous">
-        📊 Previous Workouts
-      </div>
-
-      <div class="nav-item" data-target="section-more">
-        ⚙️ More (coming soon)
-      </div>
+      <div class="nav-item active" data-target="section-design">🛠️ Design Workout</div>
+      <div class="nav-item" data-target="section-do">💪 Do Workout</div>
+      <div class="nav-item" data-target="section-previous">📊 Previous Workouts</div>
+      <div class="nav-item" data-target="section-more">⚙️ More (coming soon)</div>
 
       <div class="sidebar-footer">
-        v0.2 • MVP layout
+        v0.5 • MVP layout
       </div>
     </aside>
 
-    <!-- MAIN CONTENT AREA -->
+    <!-- MAIN -->
     <main class="main">
       <div class="main-header">
         <h1 id="sectionTitle">Design Workout</h1>
-        <div class="user-badge">
-          Logged in as: <strong>test@example.com</strong>
+        <div class="header-right">
+          <button id="themeToggleBtn" class="btn btn-secondary">Dark mode</button>
+          <div class="user-badge">
+            Logged in as: <strong>test@example.com</strong>
+          </div>
         </div>
       </div>
 
       <!-- DESIGN WORKOUT SECTION -->
       <section id="section-design" class="section active">
         <div class="card">
-          <h2>Create a new workout</h2>
+          <h2>Create / edit workout</h2>
           <p class="muted" style="margin-bottom: 12px;">
             Give your workout a name and add exercises with sets and reps.
           </p>
@@ -303,8 +392,9 @@
         <div class="card">
           <h2>Saved workouts</h2>
           <p class="muted">
-            These are the workouts you've designed. The "Do Workout" page uses these.
+            Edit, duplicate, delete, or export your saved workouts.
           </p>
+          <button type="button" class="btn btn-secondary" id="exportWorkoutsBtn">Export workouts (JSON)</button>
           <ul id="savedWorkoutsList"></ul>
         </div>
       </section>
@@ -314,14 +404,12 @@
         <div class="card">
           <h2>Start a workout</h2>
           <p class="muted" style="margin-bottom: 12px;">
-            Select one of your saved workouts, choose a date, then log the weights you used.
+            Select one of your saved workouts, choose a date, then log the weight and reps you used for every set.
           </p>
 
           <div class="form-group">
             <label for="doWorkoutSelect">Choose workout</label>
-            <select id="doWorkoutSelect">
-              <option value="">No workouts found</option>
-            </select>
+            <select id="doWorkoutSelect"></select>
           </div>
 
           <div class="form-group">
@@ -333,7 +421,7 @@
         <div class="card">
           <h2>Exercises for this workout</h2>
           <p class="muted">
-            For each exercise, enter the weight you used. Sets × reps are taken from the workout design.
+            For each exercise, enter the weight and reps for every set.
           </p>
           <div id="doExercisesContainer"></div>
         </div>
@@ -358,14 +446,27 @@
           </p>
           <ul id="sessionList"></ul>
         </div>
+
+        <div class="card">
+          <h2>Progress graph</h2>
+          <p class="muted">
+            Select an exercise to see how your weight has changed over time.
+          </p>
+          <div class="form-group">
+            <label for="progressExerciseSelect">Choose exercise</label>
+            <select id="progressExerciseSelect"></select>
+          </div>
+          <canvas id="progressChart" width="600" height="300"></canvas>
+          <p id="progressMessage" class="muted"></p>
+        </div>
       </section>
 
-      <!-- MORE SECTION (placeholder) -->
+      <!-- MORE SECTION -->
       <section id="section-more" class="section">
         <div class="card">
           <h2>More (coming soon)</h2>
           <p class="muted">
-            Future features could include user profile, app settings, dark mode, and detailed statistics.
+            Future features could include profile, settings, advanced analytics, and more.
           </p>
         </div>
       </section>
@@ -374,187 +475,291 @@
   </div>
 
   <script>
-    // --- Global data ---
+    // ---------- GLOBAL STATE ----------
     let workouts = [];
     let sessions = [];
+    let editingWorkoutIndex = null;
 
-    // --- Load from localStorage on start ---
+    // ---------- LOAD / SAVE ----------
     function loadWorkouts() {
-      const saved = localStorage.getItem('workouts');
-      if (saved) {
-        try {
-          workouts = JSON.parse(saved);
-        } catch {
-          workouts = [];
-        }
-      } else {
+      try {
+        workouts = JSON.parse(localStorage.getItem("workouts") || "[]");
+      } catch {
         workouts = [];
       }
     }
 
+    function saveWorkouts() {
+      localStorage.setItem("workouts", JSON.stringify(workouts));
+    }
+
     function loadSessions() {
-      const saved = localStorage.getItem('sessions');
-      if (saved) {
-        try {
-          sessions = JSON.parse(saved);
-        } catch {
-          sessions = [];
-        }
-      } else {
+      try {
+        sessions = JSON.parse(localStorage.getItem("sessions") || "[]");
+      } catch {
         sessions = [];
       }
     }
 
-    // --- Sidebar navigation ---
-    const navItems = document.querySelectorAll('.nav-item');
-    const sections = document.querySelectorAll('.section');
-    const sectionTitle = document.getElementById('sectionTitle');
+    function saveSessions() {
+      localStorage.setItem("sessions", JSON.stringify(sessions));
+    }
+
+    // ---------- THEME ----------
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+
+    function applyTheme(theme) {
+      if (theme === "dark") {
+        document.body.classList.add("dark");
+        themeToggleBtn.textContent = "Light mode";
+      } else {
+        document.body.classList.remove("dark");
+        themeToggleBtn.textContent = "Dark mode";
+      }
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      applyTheme(savedTheme);
+    }
+
+    themeToggleBtn.addEventListener("click", () => {
+      const isDark = document.body.classList.contains("dark");
+      const newTheme = isDark ? "light" : "dark";
+      localStorage.setItem("theme", newTheme);
+      applyTheme(newTheme);
+    });
+
+    // ---------- SIDEBAR NAV ----------
+    const navItems = document.querySelectorAll(".nav-item");
+    const sections = document.querySelectorAll(".section");
+    const sectionTitle = document.getElementById("sectionTitle");
 
     navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        navItems.forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
+      item.addEventListener("click", () => {
+        navItems.forEach(i => i.classList.remove("active"));
+        item.classList.add("active");
 
-        const targetId = item.getAttribute('data-target');
+        const targetId = item.getAttribute("data-target");
         sections.forEach(sec => {
-          sec.classList.toggle('active', sec.id === targetId);
+          sec.classList.toggle("active", sec.id === targetId);
         });
 
-        if (targetId === 'section-design') sectionTitle.textContent = 'Design Workout';
-        if (targetId === 'section-do') sectionTitle.textContent = 'Do Workout';
-        if (targetId === 'section-previous') sectionTitle.textContent = 'Previous Workouts';
-        if (targetId === 'section-more') sectionTitle.textContent = 'More (coming soon)';
+        sectionTitle.textContent = item.textContent.trim();
       });
     });
 
-    // --- Designer elements ---
-    const exerciseListEl = document.getElementById('exerciseList');
-    const addExerciseBtn = document.getElementById('addExerciseBtn');
-    const saveWorkoutBtn = document.getElementById('saveWorkoutBtn');
-    const workoutNameInput = document.getElementById('workoutName');
-    const saveMessageEl = document.getElementById('saveMessage');
-    const savedWorkoutsListEl = document.getElementById('savedWorkoutsList');
-
-    function renderSavedWorkouts() {
-      savedWorkoutsListEl.innerHTML = '';
-      if (workouts.length === 0) {
-        savedWorkoutsListEl.innerHTML = '<li class="muted">No workouts saved yet.</li>';
-        return;
-      }
-      workouts.forEach((w, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${index + 1}. ${w.name} (${w.exercises.length} exercises)`;
-        savedWorkoutsListEl.appendChild(li);
-      });
-    }
+    // ---------- DESIGN WORKOUT ----------
+    const workoutNameInput = document.getElementById("workoutName");
+    const exerciseListEl = document.getElementById("exerciseList");
+    const saveWorkoutBtn = document.getElementById("saveWorkoutBtn");
+    const saveMessageEl = document.getElementById("saveMessage");
+    const savedWorkoutsListEl = document.getElementById("savedWorkoutsList");
+    const exportWorkoutsBtn = document.getElementById("exportWorkoutsBtn");
 
     function addExerciseRow(defaults = {}) {
-      const row = document.createElement('div');
-      row.className = 'exercise-row';
-
+      const row = document.createElement("div");
+      row.className = "exercise-row";
       row.innerHTML = `
-        <input type="text" class="exercise-name" placeholder="Exercise name" value="${defaults.name || ''}">
-        <input type="number" class="exercise-sets" placeholder="Sets" min="1" value="${defaults.sets || ''}">
-        <input type="number" class="exercise-reps" placeholder="Reps" min="1" value="${defaults.reps || ''}">
-        <button type="button" class="btn btn-danger remove-exercise">X</button>
+        <input type="text" class="exercise-name" placeholder="Exercise name" value="${defaults.name || ""}">
+        <input type="number" class="exercise-sets" placeholder="Sets" min="1" value="${defaults.sets || ""}">
+        <input type="number" class="exercise-reps" placeholder="Reps" min="1" value="${defaults.reps || ""}">
+        <button type="button" class="btn btn-danger btn-sm remove-exercise">X</button>
       `;
-
-      row.querySelector('.remove-exercise').addEventListener('click', () => {
-        row.remove();
-      });
-
+      row.querySelector(".remove-exercise").addEventListener("click", () => row.remove());
       exerciseListEl.appendChild(row);
     }
 
+    document.getElementById("addExerciseBtn").addEventListener("click", () => addExerciseRow());
+
     function showMessage(el, text, type) {
       el.textContent = text;
-      el.className = ''; // reset
-      el.classList.add(type);
+      el.className = "";
+      if (type) el.classList.add(type);
+    }
+
+    function renderSavedWorkouts() {
+      savedWorkoutsListEl.innerHTML = "";
+
+      if (workouts.length === 0) {
+        savedWorkoutsListEl.innerHTML = `<li class="muted">No workouts saved yet.</li>`;
+        return;
+      }
+
+      workouts.forEach((w, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          ${index + 1}. ${w.name} (${w.exercises.length} exercises)
+          <button class="btn btn-secondary btn-sm edit-workout-btn" data-index="${index}">Edit</button>
+          <button class="btn btn-secondary btn-sm duplicate-workout-btn" data-index="${index}">Duplicate</button>
+          <button class="btn btn-danger btn-sm delete-workout-btn" data-index="${index}">Delete</button>
+        `;
+        savedWorkoutsListEl.appendChild(li);
+      });
+
+      // Attach button handlers
+      document.querySelectorAll(".edit-workout-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const index = Number(btn.getAttribute("data-index"));
+          startEditWorkout(index);
+        });
+      });
+
+      document.querySelectorAll(".duplicate-workout-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const index = Number(btn.getAttribute("data-index"));
+          duplicateWorkout(index);
+        });
+      });
+
+      document.querySelectorAll(".delete-workout-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const index = Number(btn.getAttribute("data-index"));
+          deleteWorkout(index);
+        });
+      });
+    }
+
+    function resetDesignerForm() {
+      editingWorkoutIndex = null;
+      workoutNameInput.value = "";
+      exerciseListEl.innerHTML = "";
+      addExerciseRow();
+      saveWorkoutBtn.textContent = "Save workout";
+      showMessage(saveMessageEl, "", "");
+    }
+
+    function startEditWorkout(index) {
+      const w = workouts[index];
+      editingWorkoutIndex = index;
+      workoutNameInput.value = w.name;
+      exerciseListEl.innerHTML = "";
+      w.exercises.forEach(ex => addExerciseRow(ex));
+      saveWorkoutBtn.textContent = "Update workout";
+      showMessage(saveMessageEl, `Editing workout: "${w.name}"`, "muted");
+    }
+
+    function duplicateWorkout(index) {
+      const original = workouts[index];
+      const copy = JSON.parse(JSON.stringify(original));
+      copy.name = original.name + " (copy)";
+      workouts.push(copy);
+      saveWorkouts();
+      renderSavedWorkouts();
+      populateWorkoutSelect();
+      alert("Workout duplicated.");
+    }
+
+    function deleteWorkout(index) {
+      if (!confirm("Are you sure you want to delete this workout?")) return;
+      workouts.splice(index, 1);
+      saveWorkouts();
+      renderSavedWorkouts();
+      populateWorkoutSelect();
+      // If we were editing this workout, reset the form
+      resetDesignerForm();
+      // Clear Do Workout exercises if necessary
+      doExercisesContainer.innerHTML = "";
     }
 
     function saveWorkout() {
       const name = workoutNameInput.value.trim();
       if (!name) {
-        showMessage(saveMessageEl, 'Please enter a workout name.', 'error');
+        showMessage(saveMessageEl, "Please enter a workout name.", "error");
         return;
       }
 
-      const rows = exerciseListEl.querySelectorAll('.exercise-row');
+      const rows = exerciseListEl.querySelectorAll(".exercise-row");
       if (rows.length === 0) {
-        showMessage(saveMessageEl, 'Please add at least one exercise.', 'error');
+        showMessage(saveMessageEl, "Please add at least one exercise.", "error");
         return;
       }
 
       const exercises = [];
       for (const row of rows) {
-        const exName = row.querySelector('.exercise-name').value.trim();
-        const sets = row.querySelector('.exercise-sets').value;
-        const reps = row.querySelector('.exercise-reps').value;
+        const exName = row.querySelector(".exercise-name").value.trim();
+        const sets = Number(row.querySelector(".exercise-sets").value);
+        const reps = Number(row.querySelector(".exercise-reps").value);
 
         if (!exName || !sets || !reps) {
-          showMessage(saveMessageEl, 'Please fill in all exercise fields.', 'error');
+          showMessage(saveMessageEl, "Please fill in all exercise fields.", "error");
           return;
         }
 
-        exercises.push({
-          name: exName,
-          sets: Number(sets),
-          reps: Number(reps)
-        });
+        exercises.push({ name: exName, sets, reps });
       }
 
       const workout = { name, exercises };
-      workouts.push(workout);
-      localStorage.setItem('workouts', JSON.stringify(workouts));
 
-      showMessage(saveMessageEl, 'Workout saved successfully!', 'success');
+      if (editingWorkoutIndex !== null) {
+        workouts[editingWorkoutIndex] = workout;
+        showMessage(saveMessageEl, "Workout updated successfully!", "success");
+      } else {
+        workouts.push(workout);
+        showMessage(saveMessageEl, "Workout saved successfully!", "success");
+      }
 
-      // Reset form
-      workoutNameInput.value = '';
-      exerciseListEl.innerHTML = '';
-      addExerciseRow();
-
+      saveWorkouts();
       renderSavedWorkouts();
-      populateWorkoutSelect(); // update Do Workout dropdown
+      populateWorkoutSelect();
+      resetDesignerForm();
     }
 
-    // --- Do Workout elements ---
-    const doWorkoutSelect = document.getElementById('doWorkoutSelect');
-    const doWorkoutDate = document.getElementById('doWorkoutDate');
-    const doExercisesContainer = document.getElementById('doExercisesContainer');
-    const doNotes = document.getElementById('doNotes');
-    const saveSessionBtn = document.getElementById('saveSessionBtn');
-    const sessionMessageEl = document.getElementById('sessionMessage');
-    const sessionListEl = document.getElementById('sessionList');
+    saveWorkoutBtn.addEventListener("click", saveWorkout);
+
+    // Export workouts as JSON
+    exportWorkoutsBtn.addEventListener("click", () => {
+      if (workouts.length === 0) {
+        alert("No workouts to export.");
+        return;
+      }
+      const data = JSON.stringify(workouts, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "workouts.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // ---------- DO WORKOUT ----------
+    const doWorkoutSelect = document.getElementById("doWorkoutSelect");
+    const doWorkoutDate = document.getElementById("doWorkoutDate");
+    const doExercisesContainer = document.getElementById("doExercisesContainer");
+    const doNotes = document.getElementById("doNotes");
+    const saveSessionBtn = document.getElementById("saveSessionBtn");
+    const sessionMessageEl = document.getElementById("sessionMessage");
 
     function setTodayDate() {
       const today = new Date();
       const yyyy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, '0');
-      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      const dd = String(today.getDate()).padStart(2, "0");
       doWorkoutDate.value = `${yyyy}-${mm}-${dd}`;
     }
 
     function populateWorkoutSelect() {
-      doWorkoutSelect.innerHTML = '';
-
+      doWorkoutSelect.innerHTML = "";
       if (workouts.length === 0) {
-        const opt = document.createElement('option');
-        opt.value = '';
-        opt.textContent = 'No workouts available';
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "No workouts available";
         doWorkoutSelect.appendChild(opt);
         doWorkoutSelect.disabled = true;
         return;
       }
 
       doWorkoutSelect.disabled = false;
-      const placeholder = document.createElement('option');
-      placeholder.value = '';
-      placeholder.textContent = 'Select a workout';
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Select a workout";
       doWorkoutSelect.appendChild(placeholder);
 
       workouts.forEach((w, index) => {
-        const opt = document.createElement('option');
+        const opt = document.createElement("option");
         opt.value = index;
         opt.textContent = w.name;
         doWorkoutSelect.appendChild(opt);
@@ -562,85 +767,105 @@
     }
 
     function renderDoExercises(workoutIndex) {
-      doExercisesContainer.innerHTML = '';
-      if (workoutIndex === '' || workoutIndex == null) return;
+      doExercisesContainer.innerHTML = "";
+      if (workoutIndex === "" || workoutIndex == null) return;
 
       const workout = workouts[workoutIndex];
-      workout.exercises.forEach((ex, i) => {
-        const row = document.createElement('div');
-        row.className = 'do-exercise-row';
-        row.dataset.exerciseIndex = i;
 
-        row.innerHTML = `
-          <span><strong>${ex.name}</strong> — ${ex.sets} sets × ${ex.reps} reps</span>
-          <input type="number" class="do-weight" placeholder="Weight (e.g. 40)" min="0">
-          <span class="muted">kg</span>
+      workout.exercises.forEach((ex, exIndex) => {
+        const card = document.createElement("div");
+        card.className = "exercise-card";
+        card.dataset.exerciseIndex = exIndex;
+
+        let rowsHtml = "";
+        for (let setNum = 1; setNum <= ex.sets; setNum++) {
+          rowsHtml += `
+            <tr data-set-index="${setNum - 1}">
+              <td>Set ${setNum}</td>
+              <td><input type="number" class="set-weight" placeholder="e.g. 40" min="0"></td>
+              <td><input type="number" class="set-reps" placeholder="${ex.reps}" min="0"></td>
+            </tr>
+          `;
+        }
+
+        card.innerHTML = `
+          <div class="exercise-header">
+            ${ex.name} — ${ex.sets} sets × ${ex.reps} reps (planned)
+          </div>
+          <table class="sets-table">
+            <thead>
+              <tr>
+                <th>Set</th>
+                <th>Weight (kg)</th>
+                <th>Reps</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
         `;
 
-        doExercisesContainer.appendChild(row);
+        doExercisesContainer.appendChild(card);
       });
     }
 
-    function renderSessions() {
-      sessionListEl.innerHTML = '';
-      if (sessions.length === 0) {
-        sessionListEl.innerHTML = '<li class="muted">No sessions saved yet.</li>';
-        return;
-      }
-
-      sessions
-        .slice()
-        .reverse() // show latest first
-        .forEach((s) => {
-          const li = document.createElement('li');
-          const date = s.date;
-          const workoutName = s.workoutName;
-          const exSummary = s.exercises
-            .map(e => `${e.name}: ${e.weight} kg`)
-            .join(' | ');
-
-          li.textContent = `${date} — ${workoutName} — ${exSummary}`;
-          sessionListEl.appendChild(li);
-        });
-    }
+    doWorkoutSelect.addEventListener("change", (e) => {
+      const index = e.target.value;
+      renderDoExercises(index);
+    });
 
     function saveSession() {
       const workoutIndex = doWorkoutSelect.value;
-      if (workoutIndex === '') {
-        showMessage(sessionMessageEl, 'Please select a workout.', 'error');
+      if (workoutIndex === "") {
+        showMessage(sessionMessageEl, "Please select a workout.", "error");
         return;
       }
 
       const date = doWorkoutDate.value;
       if (!date) {
-        showMessage(sessionMessageEl, 'Please choose a date.', 'error');
+        showMessage(sessionMessageEl, "Please choose a date.", "error");
         return;
       }
 
       const workout = workouts[workoutIndex];
-      const rows = doExercisesContainer.querySelectorAll('.do-exercise-row');
-      if (rows.length === 0) {
-        showMessage(sessionMessageEl, 'No exercises to log. Check your workout.', 'error');
+      const cards = doExercisesContainer.querySelectorAll(".exercise-card");
+      if (cards.length === 0) {
+        showMessage(sessionMessageEl, "No exercises to log. Check your workout.", "error");
         return;
       }
 
       const exercisesLogged = [];
-      for (const row of rows) {
-        const weightInput = row.querySelector('.do-weight');
-        const weightVal = weightInput.value;
-        const exerciseIndex = row.dataset.exerciseIndex;
-        const baseExercise = workout.exercises[exerciseIndex];
 
-        if (!weightVal) {
-          showMessage(sessionMessageEl, 'Please enter weight for all exercises.', 'error');
-          return;
+      for (const card of cards) {
+        const exIndex = Number(card.dataset.exerciseIndex);
+        const baseExercise = workout.exercises[exIndex];
+
+        const rows = card.querySelectorAll("tbody tr");
+        const setsLogged = [];
+
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          const weightVal = row.querySelector(".set-weight").value;
+          const repsVal = row.querySelector(".set-reps").value;
+
+          if (!weightVal || !repsVal) {
+            showMessage(sessionMessageEl, "Please enter weight and reps for all sets.", "error");
+            return;
+          }
+
+          setsLogged.push({
+            setNumber: i + 1,
+            weight: Number(weightVal),
+            reps: Number(repsVal)
+          });
         }
 
         exercisesLogged.push({
           name: baseExercise.name,
-          sets: baseExercise.sets,
-          reps: baseExercise.reps,
-          weight: Number(weightVal)
+          plannedSets: baseExercise.sets,
+          plannedReps: baseExercise.reps,
+          sets: setsLogged
         });
       }
 
@@ -654,36 +879,184 @@
       };
 
       sessions.push(session);
-      localStorage.setItem('sessions', JSON.stringify(sessions));
+      saveSessions();
 
-      showMessage(sessionMessageEl, 'Workout session saved!', 'success');
+      showMessage(sessionMessageEl, "Workout session saved!", "success");
 
-      // Reset weights and notes
-      doNotes.value = '';
-      doExercisesContainer.querySelectorAll('.do-weight').forEach(input => input.value = '');
+      // Reset notes & keep workout visible
+      doNotes.value = "";
+      doExercisesContainer.querySelectorAll(".set-weight").forEach(input => input.value = "");
+      doExercisesContainer.querySelectorAll(".set-reps").forEach(input => input.value = "");
 
       renderSessions();
+      updateExerciseOptions();
     }
 
-    // --- Event wiring and init ---
-    addExerciseBtn.addEventListener('click', () => addExerciseRow());
-    saveWorkoutBtn.addEventListener('click', saveWorkout);
-    saveSessionBtn.addEventListener('click', saveSession);
+    saveSessionBtn.addEventListener("click", saveSession);
 
-    doWorkoutSelect.addEventListener('change', (e) => {
-      const index = e.target.value;
-      renderDoExercises(index);
+    // ---------- PREVIOUS WORKOUTS & PROGRESS ----------
+    const sessionListEl = document.getElementById("sessionList");
+    const progressExerciseSelect = document.getElementById("progressExerciseSelect");
+    const progressChart = document.getElementById("progressChart");
+    const progressMessage = document.getElementById("progressMessage");
+    const progressCtx = progressChart.getContext("2d");
+
+    function renderSessions() {
+      sessionListEl.innerHTML = "";
+      if (sessions.length === 0) {
+        sessionListEl.innerHTML = `<li class="muted">No sessions saved yet.</li>`;
+        return;
+      }
+
+      sessions
+        .slice()
+        .reverse()
+        .forEach(s => {
+          const li = document.createElement("li");
+          li.textContent = `${s.date} — ${s.workoutName}`;
+          sessionListEl.appendChild(li);
+        });
+    }
+
+    function clearChart() {
+      progressCtx.clearRect(0, 0, progressChart.width, progressChart.height);
+    }
+
+    function updateExerciseOptions() {
+      progressExerciseSelect.innerHTML = "";
+      const names = new Set();
+
+      sessions.forEach(s => {
+        (s.exercises || []).forEach(e => names.add(e.name));
+      });
+
+      if (names.size === 0) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "No data";
+        progressExerciseSelect.appendChild(opt);
+        progressExerciseSelect.disabled = true;
+        progressMessage.textContent = "No exercise data yet. Log some sessions first.";
+        clearChart();
+        return;
+      }
+
+      progressExerciseSelect.disabled = true; // until user selects
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Select an exercise";
+      progressExerciseSelect.appendChild(placeholder);
+
+      names.forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        progressExerciseSelect.appendChild(opt);
+      });
+
+      progressExerciseSelect.disabled = false;
+      progressMessage.textContent = "Select an exercise to see progress.";
+      clearChart();
+    }
+
+    function drawProgressChart(exName) {
+      if (!exName) {
+        progressMessage.textContent = "Select an exercise to see progress.";
+        clearChart();
+        return;
+      }
+
+      const history = [];
+
+      sessions.forEach(s => {
+        const ex = (s.exercises || []).find(e => e.name === exName);
+        if (ex && ex.sets && ex.sets.length > 0) {
+          const last = ex.sets[ex.sets.length - 1];
+          history.push({ date: s.date, weight: last.weight });
+        }
+      });
+
+      if (history.length === 0) {
+        progressMessage.textContent = "No data for this exercise yet.";
+        clearChart();
+        return;
+      }
+
+      // Sort by date
+      history.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      const padding = 30;
+      const w = progressChart.width;
+      const h = progressChart.height;
+
+      clearChart();
+
+      // Axes
+      progressCtx.strokeStyle = "#9ca3af";
+      progressCtx.lineWidth = 1;
+      progressCtx.beginPath();
+      progressCtx.moveTo(padding, padding);
+      progressCtx.lineTo(padding, h - padding);
+      progressCtx.lineTo(w - padding, h - padding);
+      progressCtx.stroke();
+
+      const weights = history.map(p => p.weight);
+      const minW = Math.min(...weights);
+      const maxW = Math.max(...weights);
+      const range = maxW - minW || 1;
+      const xStep = (w - 2 * padding) / Math.max(history.length - 1, 1);
+
+      // Line
+      progressCtx.lineWidth = 2;
+      progressCtx.strokeStyle = "#2563eb";
+      progressCtx.beginPath();
+
+      history.forEach((p, idx) => {
+        const x = padding + xStep * idx;
+        const norm = (p.weight - minW) / range;
+        const y = (h - padding) - norm * (h - 2 * padding);
+        if (idx === 0) {
+          progressCtx.moveTo(x, y);
+        } else {
+          progressCtx.lineTo(x, y);
+        }
+      });
+      progressCtx.stroke();
+
+      // Points
+      progressCtx.fillStyle = "#2563eb";
+      history.forEach((p, idx) => {
+        const x = padding + xStep * idx;
+        const norm = (p.weight - minW) / range;
+        const y = (h - padding) - norm * (h - 2 * padding);
+        progressCtx.beginPath();
+        progressCtx.arc(x, y, 3, 0, Math.PI * 2);
+        progressCtx.fill();
+      });
+
+      progressMessage.textContent = `Showing ${history.length} sessions for ${exName}.`;
+    }
+
+    progressExerciseSelect.addEventListener("change", () => {
+      const exName = progressExerciseSelect.value;
+      drawProgressChart(exName);
     });
 
-    // Initial setup on page load
-    loadWorkouts();
-    loadSessions();
-    renderSavedWorkouts();
-    populateWorkoutSelect();
-    renderSessions();
-    addExerciseRow(); // start designer with one row
-    setTodayDate();
-  </script>
+    // ---------- INIT ----------
+    function init() {
+      initTheme();
+      loadWorkouts();
+      loadSessions();
 
+      renderSavedWorkouts();
+      populateWorkoutSelect();
+      renderSessions();
+      updateExerciseOptions();
+      resetDesignerForm();
+      setTodayDate();
+    }
+
+    init();
+  </script>
 </body>
 </html>
