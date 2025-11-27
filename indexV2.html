@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-box h1 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 28px;
+        }
+
+        .auth-box p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            margin-top: 10px;
+        }
+
+        .error-msg {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-msg {
+            background: #efe;
+            color: #3c3;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .app-container {
+            display: none;
+            height: 100vh;
+            background: #f5f5f5;
+        }
+
+        .app-layout {
+            display: flex;
+            height: 100%;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #333;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f5f5f5;
+        }
+
+        .nav-item.active {
+            background: #f0f0ff;
+            border-left-color: #667eea;
+            color: #667eea;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 10px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .logout-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .section {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .workout-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .workout-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .workout-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .workout-item h4 {
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .workout-item p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .workout-item-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-edit {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .exercise-list {
+            margin-top: 15px;
+        }
+
+        .exercise-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .exercise-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .exercise-item h5 {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .exercise-item p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-add {
+            background: #4caf50;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .date-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .date-display h3 {
+            font-size: 24px;
+        }
+
+        .workout-selector {
+            margin-bottom: 20px;
+        }
+
+        .workout-selector select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .set-input-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 80px;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .set-input-row label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .set-input-row input {
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .notes-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            margin-top: 10px;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .history-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .history-date {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .history-workout-name {
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .progress-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .progress-up {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .progress-down {
+            background: #ffebee;
+            color: #f44336;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+
+            .app-layout {
+                flex-direction: column;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Page -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-box">
+            <div id="signInForm">
+                <h1>Welcome Back</h1>
+                <p>Sign in to your workout tracker</p>
+                <div id="signInError" class="error-msg"></div>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="signInUsername" placeholder="Enter your username">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="signInPassword" placeholder="Enter your password">
+                </div>
+                <button class="btn" onclick="signIn()">Sign In</button>
+                <button class="btn btn-secondary" onclick="showSignUp()">Create Account</button>
+            </div>
+
+            <div id="signUpForm" style="display: none;">
+                <h1>Create Account</h1>
+                <p>Start tracking your fitness journey</p>
+                <div id="signUpError" class="error-msg"></div>
+                <div id="signUpSuccess" class="success-msg"></div>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="signUpUsername" placeholder="Choose a username">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="signUpPassword" placeholder="Choose a password">
+                </div>
+                <div class="input-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="signUpConfirmPassword" placeholder="Confirm your password">
+                </div>
+                <button class="btn" onclick="signUp()">Sign Up</button>
+                <button class="btn btn-secondary" onclick="showSignIn()">Back to Sign In</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="appContainer" class="app-container">
+        <div class="app-layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Workout Tracker</h2>
+                    <p id="userDisplay"></p>
+                </div>
+                <nav class="sidebar-nav">
+                    <div class="nav-item active" onclick="showSection('designer')">Workout Designer</div>
+                    <div class="nav-item" onclick="showSection('daily')">Daily Workout</div>
+                    <div class="nav-item" onclick="showSection('progress')">Progress & History</div>
+                </nav>
+                <div class="sidebar-footer">
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <!-- Section 1: Workout Designer -->
+                <div id="designerSection" class="section active">
+                    <div class="section-header">
+                        <h2>Workout Designer</h2>
+                        <p>Create and manage your custom workout routines</p>
+                    </div>
+
+                    <div class="card">
+                        <button class="btn" onclick="showCreateWorkoutModal()">Create New Workout</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>Your Workouts</h3>
+                        <div id="workoutList" class="workout-list"></div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Daily Workout -->
+                <div id="dailySection" class="section">
+                    <div class="section-header">
+                        <h2>Daily Workout</h2>
+                        <p>Log your workout session</p>
+                    </div>
+
+                    <div class="date-display">
+                        <h3 id="currentDate"></h3>
+                    </div>
+
+                    <div class="card">
+                        <h3>Select Workout</h3>
+                        <div class="workout-selector">
+                            <select id="dailyWorkoutSelect" onchange="loadDailyWorkout()">
+                                <option value="">Choose a workout...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="dailyWorkoutContent"></div>
+
+                    <div id="saveWorkoutButton" style="display: none;">
+                        <button class="btn" onclick="saveWorkoutSession()">Complete Workout</button>
+                    </div>
+                </div>
+
+                <!-- Section 3: Progress & History -->
+                <div id="progressSection" class="section">
+                    <div class="section-header">
+                        <h2>Progress & History</h2>
+                        <p>Track your improvements over time</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Recent Workouts</h3>
+                        <div id="historyList"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Create Workout Modal -->
+    <div id="createWorkoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Create New Workout</h3>
+                <button class="close-btn" onclick="closeCreateWorkoutModal()">&times;</button>
+            </div>
+
+            <div class="input-group">
+                <label>Workout Name</label>
+                <input type="text" id="workoutName" placeholder="e.g., Chest & Shoulders">
+            </div>
+
+            <h4 style="margin: 20px 0 10px 0;">Exercises</h4>
+            <div id="exerciseInputs"></div>
+
+            <button class="btn btn-add" onclick="addExerciseInput()">+ Add Exercise</button>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn" onclick="saveWorkout()" style="flex: 1;">Save Workout</button>
+                <button class="btn btn-secondary" onclick="closeCreateWorkoutModal()" style="flex: 1;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentEditingWorkoutId = null;
+        let currentDailyWorkout = null;
+        let sessionData = {};
+
+        // Initialize
+        function init() {
+            updateDateDisplay();
+            checkAuth();
+        }
+
+        function updateDateDisplay() {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const now = new Date();
+            const dayName = days[now.getDay()];
+            const day = now.getDate();
+            const suffix = ['th', 'st', 'nd', 'rd'][day % 10 > 3 ? 0 : (day % 100 - day % 10 != 10) * day % 10];
+            const month = months[now.getMonth()];
+            document.getElementById('currentDate').textContent = `${dayName}, ${month} ${day}${suffix}`;
+        }
+
+        function checkAuth() {
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                currentUser = user;
+                showApp();
+            }
+        }
+
+        function showSignUp() {
+            document.getElementById('signInForm').style.display = 'none';
+            document.getElementById('signUpForm').style.display = 'block';
+            document.getElementById('signUpError').style.display = 'none';
+            document.getElementById('signUpSuccess').style.display = 'none';
+        }
+
+        function showSignIn() {
+            document.getElementById('signInForm').style.display = 'block';
+            document.getElementById('signUpForm').style.display = 'none';
+            document.getElementById('signInError').style.display = 'none';
+        }
+
+        function signUp() {
+            const username = document.getElementById('signUpUsername').value.trim();
+            const password = document.getElementById('signUpPassword').value;
+            const confirmPassword = document.getElementById('signUpConfirmPassword').value;
+            const errorDiv = document.getElementById('signUpError');
+            const successDiv = document.getElementById('signUpSuccess');
+
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (!username || !password) {
+                errorDiv.textContent = 'Please fill in all fields';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (users[username]) {
+                errorDiv.textContent = 'Username already exists';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            users[username] = {
+                password: password,
+                workouts: [],
+                history: []
+            };
+            localStorage.setItem('users', JSON.stringify(users));
+
+            successDiv.textContent = 'Account created successfully! Please sign in.';
+            successDiv.style.display = 'block';
+
+            setTimeout(() => {
+                showSignIn();
+            }, 1500);
+        }
+
+        function signIn() {
+            const username = document.getElementById('signInUsername').value.trim();
+            const password = document.getElementById('signInPassword').value;
+            const errorDiv = document.getElementById('signInError');
+
+            errorDiv.style.display = 'none';
+
+            if (!username || !password) {
+                errorDiv.textContent = 'Please fill in all fields';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (!users[username] || users[username].password !== password) {
+                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            currentUser = username;
+            localStorage.setItem('currentUser', username);
+            showApp();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
+            showSignIn();
+        }
+
+        function showApp() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+            document.getElementById('userDisplay').textContent = currentUser;
+            loadWorkouts();
+            loadDailyWorkoutSelect();
+            loadHistory();
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            if (section === 'designer') {
+                document.getElementById('designerSection').classList.add('active');
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            } else if (section === 'daily') {
+                document.getElementById('dailySection').classList.add('active');
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+                loadDailyWorkoutSelect();
+            } else if (section === 'progress') {
+                document.getElementById('progressSection').classList.add('active');
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
+                loadHistory();
+            }
+        }
+
+        function getUserData() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            return users[currentUser] || { workouts: [], history: [] };
+        }
+
+        function saveUserData(data) {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            users[currentUser] = data;
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function showCreateWorkoutModal(workoutId = null) {
+            currentEditingWorkoutId = workoutId;
+            const modal = document.getElementById('createWorkoutModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const workoutNameInput = document.getElementById('workoutName');
+            const exerciseInputsDiv = document.getElementById('exerciseInputs');
+
+            exerciseInputsDiv.innerHTML = '';
+            workoutNameInput.value = '';
+
+            if (workoutId) {
+                modalTitle.textContent = 'Edit Workout';
+                const userData = getUserData();
+                const workout = userData.workouts.find(w => w.id === workoutId);
+                if (workout) {
+                    workoutNameInput.value = workout.name;
+                    workout.exercises.forEach(ex => {
+                        addExerciseInput(ex);
+                    });
+                }
+            } else {
+                modalTitle.textContent = 'Create New Workout';
+                addExerciseInput();
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeCreateWorkoutModal() {
+            document.getElementById('createWorkoutModal').classList.remove('active');
+            currentEditingWorkoutId = null;
+        }
+
+        function addExerciseInput(exercise = null) {
+            const div = document.createElement('div');
+            div.className = 'exercise-item';
+            div.innerHTML = `
+                <div class="input-group">
+                    <label>Exercise Name</label>
+                    <input type="text" class="exercise-name" placeholder="e.g., Bench Press" value="${exercise ? exercise.name : ''}">
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Sets</label>
+                        <input type="number" class="exercise-sets" min="1" value="${exercise ? exercise.sets : 3}">
+                    </div>
+                    <div class="input-group">
+                        <label>Reps</label>
+                        <input type="number" class="exercise-reps" min="1" value="${exercise ? exercise.reps : 10}">
+                    </div>
+                </div>
+                <button class="btn-small btn-delete" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            document.getElementById('exerciseInputs').appendChild(div);
+        }
+
+        function saveWorkout() {
+            const workoutName = document.getElementById('workoutName').value.trim();
+            if (!workoutName) {
+                alert('Please enter a workout name');
+                return;
+            }
+
+            const exerciseItems = document.querySelectorAll('#exerciseInputs .exercise-item');
+            const exercises = [];
+
+            exerciseItems.forEach(item => {
+                const name = item.querySelector('.exercise-name').value.trim();
+                const sets = parseInt(item.querySelector('.exercise-sets').value);
+                const reps = parseInt(item.querySelector('.exercise-reps').value);
+
+                if (name && sets > 0 && reps > 0) {
+                    exercises.push({ name, sets, reps });
+                }
+            });
+
+            if (exercises.length === 0) {
+                alert('Please add at least one exercise');
+                return;
+            }
+
+            const userData = getUserData();
+            
+            if (currentEditingWorkoutId) {
+                const index = userData.workouts.findIndex(w => w.id === currentEditingWorkoutId);
+                userData.workouts[index] = {
+                    id: currentEditingWorkoutId,
+                    name: workoutName,
+                    exercises: exercises
+                };
+            } else {
+                userData.workouts.push({
+                    id: Date.now().toString(),
+                    name: workoutName,
+                    exercises: exercises
+                });
+            }
+
+            saveUserData(userData);
+            closeCreateWorkoutModal();
+            loadWorkouts();
+            loadDailyWorkoutSelect();
+        }
+
+        function loadWorkouts() {
+            const userData = getUserData();
+            const workoutList = document.getElementById('workoutList');
+
+            if (userData.workouts.length === 0) {
+                workoutList.innerHTML = '<div class="empty-state"><h3>No workouts yet</h3><p>Create your first workout to get started</p></div>';
+                return;
+            }
+
+            workoutList.innerHTML = userData.workouts.map(workout => `
+                <div class="workout-item">
+                    <h4>${workout.name}</h4>
+                    <p>${workout.exercises.length} exercises</p>
+                    <div class="exercise-list">
+                        ${workout.exercises.map(ex => `
+                            <div style="font-size: 14px; color: #666; margin-top: 5px;">
+                                • ${ex.name}: ${ex.sets} sets × ${ex.reps} reps
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="workout-item-actions">
+                        <button class="btn-small btn-edit" onclick="showCreateWorkoutModal('${workout.id}')">Edit</button>
+                        <button class="btn-small btn-delete" onclick="deleteWorkout('${workout.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteWorkout(workoutId) {
+            if (!confirm('Are you sure you want to delete this workout?')) return;
+
+            const userData = getUserData();
+            userData.workouts = userData.workouts.filter(w => w.id !== workoutId);
+            saveUserData(userData);
+            loadWorkouts();
+            loadDailyWorkoutSelect();
+        }
+
+        function loadDailyWorkoutSelect() {
+            const userData = getUserData();
+            const select = document.getElementById('dailyWorkoutSelect');
+
+            select.innerHTML = '<option value="">Choose a workout...</option>' +
+                userData.workouts.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
+        }
+
+        function loadDailyWorkout() {
+            const workoutId = document.getElementById('dailyWorkoutSelect').value;
+            const contentDiv = document.getElementById('dailyWorkoutContent');
+            const saveButton = document.getElementById('saveWorkoutButton');
+
+            if (!workoutId) {
+                contentDiv.innerHTML = '';
+                saveButton.style.display = 'none';
